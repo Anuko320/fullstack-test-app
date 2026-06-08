@@ -1,0 +1,14 @@
+<h2>Support</h2>
+
+<div class="modal-body">
+  <input [(ngModel)]="email" placeholder="Email" />
+  <textarea [(ngModel)]="message" placeholder="Message"></textarea>
+
+  <div class="actions">
+    <button (click)="send()" [disabled]="loading">
+      Send
+    </button>
+
+    <button (click)="close()">Cancel</button>
+  </div>
+</div>
