@@ -14,7 +14,13 @@ export class AddUserDialog {
   private readonly usersService = inject(UsersService);
   private readonly dialogRef = inject(DialogRef);
 
-  readonly newUserModel = signal({ name: '', email: '', city: '' });
+  readonly newUserModel = signal({
+    name: '',
+    email: '',
+    city: '',
+    phone: '',
+    website: '',
+  });
 
   readonly newUserForm = form(this.newUserModel, (schemaPath) => {
     required(schemaPath.name, { message: 'users.form.nameRequired' });
@@ -29,10 +35,12 @@ export class AddUserDialog {
   addUser(): void {
     submit(this.newUserForm, async () => {
       const model = this.newUserModel();
-      this.usersService.addUser({
+      await this.usersService.addUser({
         name: model.name,
         email: model.email,
         city: model.city,
+        phone: model.phone || undefined,
+        website: model.website || undefined,
       });
       this.dialogRef.close();
     });

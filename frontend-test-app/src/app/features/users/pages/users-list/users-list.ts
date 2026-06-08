@@ -11,21 +11,17 @@ import {
   CdkOverlayOrigin,
 } from '@angular/cdk/overlay';
 import { Router } from '@angular/router';
-import { form, FormField, email, minLength, required, submit } from '@angular/forms/signals';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 import { AuthService } from '../../../../core/services/auth';
-import { UsersService } from '../../services/users.service';
+import { UsersService, SortField, SortOrder } from '../../services/users.service';
 
 import { Dialog } from '@angular/cdk/dialog';
 import { AddUserDialog } from '../../../../shared/add-user-dialog/add-user-dialog';
-
 import { EditUserDialog, EditUserDialogData } from '../../../../shared/edit-user-dialog/edit-user-dialog';
 import { AppHeader } from '../../../../shared/app-header/app-header';
 
 const DELETE_MESSAGE_MS = 3000;
-
-export type NameSortOrder = 'default' | 'asc' | 'desc';
 
 @Component({
   selector: 'app-users-list',
@@ -46,7 +42,6 @@ export class UsersList {
   private readonly destroyRef = inject(DestroyRef);
   private readonly translate = inject(TranslateService);
   private deleteMessageTimer: ReturnType<typeof setTimeout> | null = null;
-
   private readonly dialog = inject(Dialog);
 
   readonly users = this.usersService.users;
@@ -55,67 +50,18 @@ export class UsersList {
 
   readonly pendingDeleteId = signal<number | null>(null);
   readonly editingUserId = signal<number | null>(null);
-
   readonly searchInput = signal('');
-  readonly nameSortOrder = signal<NameSortOrder>('default');
-
-  readonly showAddUserPanel = signal(false);
+  readonly sortBy = signal<SortField>('id');
+  readonly sortOrder = signal<SortOrder>('ASC');
   readonly showSortDropdown = signal(false);
-
   readonly deleteMessage = signal<string | null>(null);
 
-  readonly filteredUsers = computed(() => {
-    const query = this.searchInput().trim().toLowerCase();
-    const list = this.users();
-
-    if (!query) {
-      return list;
-    }
-
-    return list.filter((user) => user.name.toLowerCase().includes(query));
-  });
-
-  readonly displayedUsers = computed(() => {
-    const list = [...this.filteredUsers()];
-    const order = this.nameSortOrder();
-
-    if (order === 'asc') {
-      return list.sort((a, b) =>
-        a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }),
-      );
-    }
-
-    if (order === 'desc') {
-      return list.sort((a, b) =>
-        b.name.localeCompare(a.name, undefined, { sensitivity: 'base' }),
-      );
-    }
-
-    return list;
-  });
-
+  readonly displayedUsers = computed(() => this.users());
   readonly totalUsers = computed(() => this.users().length);
-  readonly visibleUsers = computed(() => this.displayedUsers().length);
-
-  readonly newUserModel = signal({
-    name: '',
-    email: '',
-    city: '',
-  });
-
-  readonly newUserForm = form(this.newUserModel, (schemaPath) => {
-    required(schemaPath.name, { message: 'users.form.nameRequired' });
-    minLength(schemaPath.name, 3, { message: 'users.form.nameMinLength' });
-    required(schemaPath.email, { message: 'users.form.emailRequired' });
-    email(schemaPath.email, { message: 'users.form.emailInvalid' });
-    required(schemaPath.city, { message: 'users.form.cityRequired' });
-  });
-
-  readonly canAddUser = computed(() => this.newUserForm().valid());
+  readonly visibleUsers = computed(() => this.users().length);
 
   constructor() {
     this.usersService.init();
-
     this.destroyRef.onDestroy(() => {
       if (this.deleteMessageTimer !== null) {
         window.clearTimeout(this.deleteMessageTimer);
@@ -126,58 +72,45 @@ export class UsersList {
   onSearchInput(event: Event): void {
     const value = (event.target as HTMLInputElement).value;
     this.searchInput.set(value);
+    this.usersService.loadUsers({
+      search: value,
+      sortBy: this.sortBy(),
+      order: this.sortOrder(),
+    });
   }
 
   clearSearch(): void {
     this.searchInput.set('');
+    this.usersService.loadUsers({
+      sortBy: this.sortBy(),
+      order: this.sortOrder(),
+    });
   }
 
-  onSortChange(event: Event): void {
-    const value = (event.target as HTMLSelectElement).value as NameSortOrder;
-    this.nameSortOrder.set(value);
+  onSortFieldChange(field: SortField): void {
+    this.sortBy.set(field);
+    this.showSortDropdown.set(false);
+    this.usersService.loadUsers({
+      search: this.searchInput(),
+      sortBy: field,
+      order: this.sortOrder(),
+    });
+  }
+
+  onSortOrderChange(order: SortOrder): void {
+    this.sortOrder.set(order);
+    this.usersService.loadUsers({
+      search: this.searchInput(),
+      sortBy: this.sortBy(),
+      order: order,
+    });
   }
 
   retryLoad(): void {
-    this.usersService.reloadFromApi();
-  }
-
-  toggleAddUserPanel(): void {
-    this.showAddUserPanel.update((open) => !open);
-  }
-
-  closeAddUserPanel(): void {
-    this.showAddUserPanel.set(false);
-  }
-
-  addUser(): void {
-    submit(this.newUserForm, async () => {
-      const model = this.newUserModel();
-      const editingId = this.editingUserId();
-
-      if (editingId !== null) {
-        this.usersService.updateUser({
-          id: editingId,
-          name: model.name,
-          email: model.email,
-          city: model.city,
-        });
-
-        this.editingUserId.set(null);
-      } else {
-        this.usersService.addUser({
-          name: model.name,
-          email: model.email,
-          city: model.city,
-        });
-      }
-
-      this.newUserModel.set({
-        name: '',
-        email: '',
-        city: '',
-      });
-
-      this.showAddUserPanel.set(false);
+    this.usersService.loadUsers({
+      search: this.searchInput(),
+      sortBy: this.sortBy(),
+      order: this.sortOrder(),
     });
   }
 
@@ -190,8 +123,8 @@ export class UsersList {
   requestDelete(id: number): void {
     this.pendingDeleteId.set(id);
   }
-  
-  openEditUser(user: { id: number; name: string; email: string; city: string }): void {
+
+  openEditUser(user: { id: number; name: string; email: string; city: string; phone?: string; website?: string }): void {
     this.dialog.open<unknown, EditUserDialogData>(EditUserDialog, {
       data: user,
       panelClass: 'dialog-panel',
@@ -205,12 +138,12 @@ export class UsersList {
   async confirmDelete(): Promise<void> {
     const id = this.pendingDeleteId();
     if (id === null) return;
-  
+
     const user = this.users().find((u) => u.id === id);
     this.pendingDeleteId.set(null);
-  
+
     await this.usersService.deleteUser(id);
-  
+
     if (user) {
       this.showDeleteMessage(
         this.translate.instant('users.deleteSuccess', { name: user.name }),
@@ -227,7 +160,6 @@ export class UsersList {
     if (this.deleteMessageTimer !== null) {
       window.clearTimeout(this.deleteMessageTimer);
     }
-
     this.deleteMessage.set(message);
     this.deleteMessageTimer = window.setTimeout(() => {
       this.deleteMessage.set(null);

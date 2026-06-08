@@ -22,15 +22,13 @@
     "logoutTitle": "Подтвердите выход",
     "logoutMessage": "Вы уверены, что хотите выйти из аккаунта?",
     "confirm": "Подтвердить"
-
   },
-  "header":{
+  "header": {
     "theme": "Тема",
     "logout": "Выйти",
     "language": "Язык",
     "lightTheme": "Светлая тема",
     "darkTheme": "Тёмная тема"
-  
   },
   "users": {
     "title": "Пользователи",
@@ -42,8 +40,13 @@
       "clear": "Очистить"
     },
     "sort": {
-      "label": "Сортировка по A-Z",
-      "placeholder": "Сортировка"
+      "label": "Сортировка",
+      "placeholder": "Сортировка",
+      "nameAsc": "Имя А → Я",
+      "nameDesc": "Имя Я → А",
+      "city": "Город А → Я",
+      "email": "Email А → Я",
+      "default": "По умолчанию"
     },
     "addUser": "Добавить пользователя",
     "allUsers": "Все пользователи",
@@ -55,12 +58,18 @@
     "noUsersFound": "Пользователи не найдены",
     "listAriaLabel": "Список пользователей",
     "confirmDeleteAriaLabel": "Подтвердить удаление {{name}}",
-    "deleteSuccess": "{{name}} удалён локально",
+    "deleteSuccess": "{{name}} удалён",
     "form": {
+      "editTitle": "Редактировать пользователя",
       "title": "Новый пользователь",
       "name": "Имя",
       "email": "Email",
       "city": "Город",
+      "phone": "Телефон",
+      "website": "Сайт",
+      "optional": "необязательно",
+      "phonePlaceholder": "024-648-3804",
+      "websitePlaceholder": "example.com",
       "nameRequired": "Имя обязательно",
       "nameMinLength": "Имя должно быть не короче 3 символов",
       "emailRequired": "Email обязателен",

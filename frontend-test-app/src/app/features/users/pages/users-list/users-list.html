@@ -36,10 +36,14 @@
           class="input sort-select-btn"
           (click)="showSortDropdown.set(!showSortDropdown())"
         >
-          @if (nameSortOrder() === 'asc') {
-            <span>A -> Z</span>
-          } @else if (nameSortOrder() === 'desc') {
-            <span>Z -> A</span>
+          @if (sortBy() === 'name' && sortOrder() === 'ASC') {
+            <span>{{ 'users.sort.nameAsc' | translate }}</span>
+          } @else if (sortBy() === 'name' && sortOrder() === 'DESC') {
+            <span>{{ 'users.sort.nameDesc' | translate }}</span>
+          } @else if (sortBy() === 'city') {
+            <span>{{ 'users.sort.city' | translate }}</span>
+          } @else if (sortBy() === 'email') {
+            <span>{{ 'users.sort.email' | translate }}</span>
           } @else {
             <span>{{ 'users.sort.placeholder' | translate }}</span>
           }
@@ -62,53 +66,29 @@
           ]"
         >
           <div class="sort-dropdown">
-            <button
-              type="button"
-              class="sort-dropdown"
-              (click)="nameSortOrder.set('asc'); showSortDropdown.set(false)"
-            >
-              A -> Z
+            <button type="button" class="sort-option" (click)="onSortFieldChange('name'); onSortOrderChange('ASC')">
+              {{ 'users.sort.nameAsc' | translate }}
             </button>
-
-            <button
-              type="button"
-              class="sort-dropdown"
-              (click)="nameSortOrder.set('desc'); showSortDropdown.set(false)"
-            >
-              Z -> A
+            <button type="button" class="sort-option" (click)="onSortFieldChange('name'); onSortOrderChange('DESC')">
+              {{ 'users.sort.nameDesc' | translate }}
+            </button>
+            <button type="button" class="sort-option" (click)="onSortFieldChange('city'); onSortOrderChange('ASC')">
+              {{ 'users.sort.city' | translate }}
+            </button>
+            <button type="button" class="sort-option" (click)="onSortFieldChange('email'); onSortOrderChange('ASC')">
+              {{ 'users.sort.email' | translate }}
+            </button>
+            <button type="button" class="sort-option" (click)="onSortFieldChange('id'); onSortOrderChange('ASC')">
+              {{ 'users.sort.default' | translate }}
             </button>
           </div>
         </ng-template>
       </div>
 
       <div class="add-user-wrap">
-        <button
-          cdkOverlayOrigin
-          #addUserTrigger="cdkOverlayOrigin"
-          type="button"
-          class="btn btn-primary"
-          (click)="openAddUserDialog()"
-        >
+        <button type="button" class="btn btn-primary" (click)="openAddUserDialog()">
           {{ 'users.addUser' | translate }}
         </button>
-
-        <ng-template
-          cdkConnectedOverlay
-          [cdkConnectedOverlayOrigin]="addUserTrigger"
-          [cdkConnectedOverlayOpen]="showAddUserPanel()"
-          [cdkConnectedOverlayHasBackdrop]="true"
-          (backdropClick)="closeAddUserPanel()"
-          [cdkConnectedOverlayPositions]="[
-            {
-              originX: 'start',
-              originY: 'bottom',
-              overlayX: 'start',
-              overlayY: 'top',
-              offsetY: 12
-            }
-          ]"
-        >
-        </ng-template>
       </div>
     </div>
 
@@ -149,19 +129,12 @@
 
               <div class="user-row-actions">
                 @if (pendingDeleteId() === user.id) {
-                  <div
-                    class="delete-confirm"
-                    role="group"
-                    [attr.aria-label]="'users.confirmDeleteAriaLabel' | translate: { name: user.name }"
-                  >
-                    <p>Delete locally</p>
+                  <div class="delete-confirm" role="group">
                     <div class="form-actions">
                       <button type="button" class="btn btn-danger-solid" (click)="confirmDelete()">
-                        Yes, delete
                         {{ 'common.delete' | translate }}
                       </button>
                       <button type="button" class="btn btn-secondary" (click)="cancelDelete()">
-                        Cancel
                         {{ 'common.cancel' | translate }}
                       </button>
                     </div>
@@ -170,7 +143,6 @@
                   <button type="button" class="btn btn-danger" (click)="requestDelete(user.id)">
                     {{ 'users.deleteUser' | translate }}
                   </button>
-
                   <button type="button" class="btn btn-edit" (click)="openEditUser(user)">
                     {{ 'users.editUser' | translate }}
                   </button>

@@ -5,9 +5,17 @@ import {
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiBody, ApiProperty } from '@nestjs/swagger';
+import { IsString, IsNotEmpty } from 'class-validator';
 import { AuthService } from './auth.service';
 import { LoginDto, TokenResponse } from './dto/auth.dto';
+
+export class RefreshTokenDto {
+  @ApiProperty({ example: 'eyJhbGci...' })
+  @IsString()
+  @IsNotEmpty()
+  refreshToken: string;
+}
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -31,9 +39,7 @@ export class AuthController {
   @ApiOperation({ summary: 'Refresh access token using refresh token' })
   @ApiResponse({ status: 200, description: 'Returns new token pair' })
   @ApiResponse({ status: 401, description: 'Invalid or expired refresh token' })
-  async refresh(
-    @Body('refreshToken') refreshToken: string,
-  ): Promise<TokenResponse> {
-    return this.authService.refreshTokens(refreshToken);
+  async refresh(@Body() dto: RefreshTokenDto): Promise<TokenResponse> {
+    return this.authService.refreshTokens(dto.refreshToken);
   }
 }

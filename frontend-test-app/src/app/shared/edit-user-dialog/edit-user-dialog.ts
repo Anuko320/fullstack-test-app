@@ -9,7 +9,10 @@ export interface EditUserDialogData {
   name: string;
   email: string;
   city: string;
+  phone?: string;
+  website?: string;
 }
+
 @Component({
   selector: 'app-edit-user-dialog',
   imports: [FormField, TranslateModule],
@@ -25,6 +28,8 @@ export class EditUserDialog {
     name: this.data.name,
     email: this.data.email,
     city: this.data.city,
+    phone: this.data.phone ?? '',
+    website: this.data.website ?? '',
   });
 
   readonly newUserForm = form(this.newUserModel, (schemaPath) => {
@@ -40,11 +45,13 @@ export class EditUserDialog {
   save(): void {
     submit(this.newUserForm, async () => {
       const model = this.newUserModel();
-      this.usersService.updateUser({
+      await this.usersService.updateUser({
         id: this.data.id,
         name: model.name,
         email: model.email,
         city: model.city,
+        phone: model.phone || undefined,
+        website: model.website || undefined,
       });
       this.dialogRef.close();
     });

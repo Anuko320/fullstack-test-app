@@ -22,15 +22,13 @@
     "logoutTitle": "Confirm logout",
     "logoutMessage": "Are you sure you want to leave your account?",
     "confirm": "Confirm"
-
   },
-  "header":{
+  "header": {
     "theme": "Theme",
     "logout": "Quit",
-    "language": "language",
-    "lightTheme": "LightTheme",
-    "darkTheme": "DarkTheme"
-
+    "language": "Language",
+    "lightTheme": "Light Theme",
+    "darkTheme": "Dark Theme"
   },
   "users": {
     "title": "Users",
@@ -42,8 +40,13 @@
       "clear": "Clear"
     },
     "sort": {
-      "label": "Sort by A-Z",
-      "placeholder": "Sort"
+      "label": "Sort",
+      "placeholder": "Sort",
+      "nameAsc": "Name A → Z",
+      "nameDesc": "Name Z → A",
+      "city": "City A → Z",
+      "email": "Email A → Z",
+      "default": "By default"
     },
     "addUser": "Add user",
     "allUsers": "All users",
@@ -55,12 +58,18 @@
     "noUsersFound": "No users found",
     "listAriaLabel": "Users list",
     "confirmDeleteAriaLabel": "Confirm delete {{name}}",
-    "deleteSuccess": "{{name}} deleted locally",
+    "deleteSuccess": "{{name}} deleted",
     "form": {
+      "editTitle": "Edit user",
       "title": "New user",
       "name": "Name",
       "email": "Email",
       "city": "City",
+      "phone": "Phone",
+      "website": "Website",
+      "optional": "optional",
+      "phonePlaceholder": "024-648-3804",
+      "websitePlaceholder": "example.com",
       "nameRequired": "Name is required",
       "nameMinLength": "Name must be at least 3 characters",
       "emailRequired": "Email is required",

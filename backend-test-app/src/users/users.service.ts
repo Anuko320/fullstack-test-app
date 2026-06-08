@@ -5,7 +5,7 @@ import {
   Logger,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, ILike } from 'typeorm';
+import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import {
   CreateUserDto,
@@ -25,20 +25,19 @@ export class UsersService {
 
   async findAll(query: GetUsersQueryDto): Promise<PaginatedResponse<User>> {
     const { search, page = 1, limit = 10, sortBy = 'id', order = 'ASC' } = query;
-
     const skip = (page - 1) * limit;
-
-    const where = search
-      ? { name: ILike(`%${search}%`) }
-      : {};
-
-    const [data, total] = await this.userRepository.findAndCount({
-      where,
-      order: { [sortBy]: order },
-      skip,
-      take: limit,
-    });
-
+  
+    const qb = this.userRepository.createQueryBuilder('user');
+  
+    if (search) {
+      qb.where('LOWER(user.name) LIKE LOWER(:search)', { search: `%${search}%` });
+    }
+  
+    qb.orderBy(`user.${sortBy}`, order, 'NULLS LAST');
+    qb.skip(skip).take(limit);
+  
+    const [data, total] = await qb.getManyAndCount();
+  
     return {
       data,
       meta: {

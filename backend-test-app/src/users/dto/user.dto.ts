@@ -35,10 +35,11 @@ export class AddressDto {
   @IsString()
   suite?: string;
 
-  @ApiPropertyOptional({ example: 'Lebsackbury' })
-  @IsOptional()
+  @ApiProperty({ example: 'Lebsackbury' })
   @IsString()
-  city?: string;
+  @IsNotEmpty()
+  @MaxLength(100)
+  city: string;
 
   @ApiPropertyOptional({ example: '31428-2261' })
   @IsOptional()
@@ -74,7 +75,7 @@ export class CreateUserDto {
   @ApiProperty({ example: 'Clementina DuBuque' })
   @IsString()
   @IsNotEmpty()
-  @MinLength(2)
+  @MinLength(3)
   @MaxLength(100)
   name: string;
 
