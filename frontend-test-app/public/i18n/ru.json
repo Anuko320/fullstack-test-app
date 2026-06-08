@@ -1,0 +1,71 @@
+{
+  "app": {
+    "Logout": "Выйти"
+  },
+  "auth": {
+    "title": "С возвращением",
+    "subtitle": "Войдите, чтобы управлять пользователями",
+    "login": "Логин",
+    "password": "Пароль",
+    "signIn": "Войти",
+    "loginRequired": "Введите логин",
+    "passwordRequired": "Введите пароль",
+    "invalidCredentials": "Неверный логин или пароль"
+  },
+  "common": {
+    "save": "Сохранить",
+    "cancel": "Отмена",
+    "delete": "Удалить",
+    "retry": "Повторить"
+  },
+  "confirm": {
+    "logoutTitle": "Подтвердите выход",
+    "logoutMessage": "Вы уверены, что хотите выйти из аккаунта?",
+    "confirm": "Подтвердить"
+
+  },
+  "header":{
+    "theme": "Тема",
+    "logout": "Выйти",
+    "language": "Язык",
+    "lightTheme": "Светлая тема",
+    "darkTheme": "Тёмная тема"
+  
+  },
+  "users": {
+    "title": "Пользователи",
+    "subtitle": "{{count}} пользователей в системе",
+    "search": {
+      "label": "Поиск по имени",
+      "placeholder": "Введите имя...",
+      "ariaLabel": "Поиск пользователей по имени",
+      "clear": "Очистить"
+    },
+    "sort": {
+      "label": "Сортировка по A-Z",
+      "placeholder": "Сортировка"
+    },
+    "addUser": "Добавить пользователя",
+    "allUsers": "Все пользователи",
+    "shown": "Показано: {{count}}",
+    "loading": "Загрузка пользователей...",
+    "deleteUser": "Удалить",
+    "editUser": "Редактировать",
+    "nothingFound": "Ничего не найдено",
+    "noUsersFound": "Пользователи не найдены",
+    "listAriaLabel": "Список пользователей",
+    "confirmDeleteAriaLabel": "Подтвердить удаление {{name}}",
+    "deleteSuccess": "{{name}} удалён локально",
+    "form": {
+      "title": "Новый пользователь",
+      "name": "Имя",
+      "email": "Email",
+      "city": "Город",
+      "nameRequired": "Имя обязательно",
+      "nameMinLength": "Имя должно быть не короче 3 символов",
+      "emailRequired": "Email обязателен",
+      "emailInvalid": "Введите корректный email",
+      "cityRequired": "Город обязателен"
+    }
+  }
+}

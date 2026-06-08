@@ -1,0 +1,18 @@
+<section class="confirm-dialog" role="alertdialog" aria-labelledby="confirm-dialog-title" aria-describedby="confirm-dialog-message">
+  <h2 id="confirm-dialog-title" class="confirm-dialog-title">
+    {{ data.title | translate }}
+  </h2>
+
+  <p id="confirm-dialog-message" class="confirm-dialog-message">
+    {{ data.message | translate }}
+  </p>
+
+  <div class="confirm-dialog-actions">
+    <button type="button" class="btn btn-secondary" (click)="close(false)">
+      {{ data.cancelText | translate }}
+    </button>
+    <button type="button" class="btn btn-danger-solid" (click)="close(true)">
+      {{ data.confirmText | translate }}
+    </button>
+  </div>
+</section>

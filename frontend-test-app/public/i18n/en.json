@@ -1,0 +1,71 @@
+{
+  "app": {
+    "Logout": "Logout"
+  },
+  "auth": {
+    "title": "Welcome back",
+    "subtitle": "Sign in to manage users",
+    "login": "Login",
+    "password": "Password",
+    "signIn": "Sign in",
+    "loginRequired": "Enter login",
+    "passwordRequired": "Enter password",
+    "invalidCredentials": "Invalid login or password"
+  },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "retry": "Retry"
+  },
+  "confirm": {
+    "logoutTitle": "Confirm logout",
+    "logoutMessage": "Are you sure you want to leave your account?",
+    "confirm": "Confirm"
+
+  },
+  "header":{
+    "theme": "Theme",
+    "logout": "Quit",
+    "language": "language",
+    "lightTheme": "LightTheme",
+    "darkTheme": "DarkTheme"
+
+  },
+  "users": {
+    "title": "Users",
+    "subtitle": "{{count}} users in directory",
+    "search": {
+      "label": "Search by name",
+      "placeholder": "Enter name...",
+      "ariaLabel": "Search users by name",
+      "clear": "Clear"
+    },
+    "sort": {
+      "label": "Sort by A-Z",
+      "placeholder": "Sort"
+    },
+    "addUser": "Add user",
+    "allUsers": "All users",
+    "shown": "{{count}} shown",
+    "loading": "Loading users...",
+    "deleteUser": "Delete user",
+    "editUser": "Edit user",
+    "nothingFound": "Nothing found",
+    "noUsersFound": "No users found",
+    "listAriaLabel": "Users list",
+    "confirmDeleteAriaLabel": "Confirm delete {{name}}",
+    "deleteSuccess": "{{name}} deleted locally",
+    "form": {
+      "title": "New user",
+      "name": "Name",
+      "email": "Email",
+      "city": "City",
+      "nameRequired": "Name is required",
+      "nameMinLength": "Name must be at least 3 characters",
+      "emailRequired": "Email is required",
+      "emailInvalid": "Enter a valid email",
+      "cityRequired": "City is required"
+    }
+  }
+}

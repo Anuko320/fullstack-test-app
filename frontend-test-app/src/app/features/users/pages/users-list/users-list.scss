@@ -1,0 +1,280 @@
+.page-container {
+  padding-top: var(--space-6);
+  padding-bottom: var(--space-10);
+}
+
+.search-field {
+  flex: 1;
+  min-width: min(100%, 20rem);
+}
+
+.sort-field {
+  flex-shrink: 0;
+  min-width: 10rem;
+}
+
+.sort-select {
+  cursor: pointer;
+}
+
+.search-row {
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+
+  .input {
+    flex: 1;
+    min-width: 0;
+  }
+}
+
+.add-user-wrap {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.add-user-panel {
+  position: absolute;
+  top: calc(100% + var(--space-2));
+  right: 0;
+  z-index: 20;
+  width: min(20rem, calc(100vw - 2rem));
+}
+
+.panel-title {
+  margin: 0 0 var(--space-4);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+.add-user-form {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.error-block {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+
+  .alert {
+    margin: 0;
+    flex: 1;
+    min-width: 12rem;
+  }
+}
+
+.users-panel-body {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-5);
+  border-bottom: 1px solid var(--color-border);
+  transition: background-color var(--transition-fast);
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &:hover {
+    background: var(--color-surface-muted);
+  }
+}
+
+.user-row-main {
+  display: flex;
+  flex: 1;
+  gap: var(--space-4);
+  align-items: center;
+  min-width: min(100%, 14rem);
+}
+
+.user-row-actions {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  min-width: 8rem;
+}
+
+.user-avatar {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--accent-700);
+  background: var(--color-primary-subtle);
+  border-radius: var(--radius);
+}
+
+.user-info {
+  min-width: 0;
+}
+
+.user-name {
+  margin: 0 0 var(--space-1);
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.user-meta {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  word-break: break-word;
+
+  & + & {
+    margin-top: 0.125rem;
+  }
+}
+
+.delete-confirm {
+  text-align: right;
+
+  p {
+    margin: 0 0 var(--space-2);
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+  }
+
+  .form-actions {
+    justify-content: flex-end;
+  }
+}
+
+.empty-state {
+  padding: var(--space-10) var(--space-5);
+  text-align: center;
+}
+
+@media (max-width: 640px) {
+  .controls-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .add-user-wrap {
+    width: 100%;
+
+    .btn-primary {
+      width: 100%;
+    }
+  }
+
+  .add-user-panel {
+    width: 420px;
+  }
+
+  .add-user-panel {
+    left: 0;
+    right: 0;
+    width: 100%;
+  }
+
+  .user-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .user-row-actions {
+    width: 100%;
+    justify-content: stretch;
+
+    .btn {
+      width: 100%;
+    }
+  }
+
+  .delete-confirm {
+    text-align: left;
+
+    .form-actions .btn {
+      flex: 1;
+    }
+  }
+
+  .sort-select-btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-width: 180px;
+    cursor: pointer;
+  }
+
+  .sort-dropdown {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  
+    min-width: 180px;
+    padding: 8px;
+  
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,.08);
+  
+    background: #172033;
+  
+    box-shadow:
+      0 10px 30px rgba(0,0,0,.35);
+  }
+
+  .sort-option {
+    border: none;
+    background: transparent;
+  
+    color: white;
+  
+    padding: 10px 12px;
+    border-radius: 10px;
+  
+    text-align: left;
+    cursor: pointer;
+  
+    transition: .2s;
+  }
+  
+  .sort-option:hover {
+    background: rgba(255,255,255,.06);
+  }
+
+  .sort-select-btn {
+    min-width: 220px;
+  
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  
+    cursor: pointer;
+  }
+
+  .cdk-overlay-pane .sort-dropdown {
+    background: #1f2937;
+    border-radius: 16px;
+    padding: 8px;
+  }
+
+  .cdk-overlay-pane .sort-option {
+    color: white;
+  }
+}

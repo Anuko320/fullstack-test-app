@@ -1,0 +1,69 @@
+<div>
+    <div class="modal">
+      <p class="panel-title">{{ 'users.form.title' | translate }}</p>
+  
+      <form class="add-user-form" (submit)="save(); $event.preventDefault()">
+        <label class="field">
+          <span class="field-label">{{ 'users.form.name' | translate }}</span>
+          <input
+            class="input"
+            [class.input-invalid]="newUserForm.name().invalid() && newUserForm.name().touched()"
+            type="text"
+            [placeholder]="'users.form.name' | translate"
+            [formField]="newUserForm.name"
+          />
+          @if (newUserForm.name().touched() && newUserForm.name().errors().length) {
+            <span class="field-error" role="alert">
+              {{ newUserForm.name().errors()[0].message | translate }}
+            </span>
+          }
+        </label>
+
+        <label class="field">
+          <span class="field-label">{{ 'users.form.email' | translate }}</span>
+          <input
+            class="input"
+            [class.input-invalid]="newUserForm.email().invalid() && newUserForm.email().touched()"
+            type="email"
+            [placeholder]="'users.form.email' | translate"
+            [formField]="newUserForm.email"
+          />
+          @if (newUserForm.email().touched() && newUserForm.email().errors().length) {
+            <span class="field-error" role="alert">
+              {{ newUserForm.email().errors()[0].message | translate }}
+            </span>
+          }
+        </label>
+
+        <label class="field">
+          <span class="field-label">{{ 'users.form.city' | translate }}</span>
+          <input
+            class="input"
+            [class.input-invalid]="newUserForm.city().invalid() && newUserForm.city().touched()"
+            type="text"
+            [placeholder]="'users.form.city' | translate"
+            [formField]="newUserForm.city"
+          />
+          @if (newUserForm.city().touched() && newUserForm.city().errors().length) {
+            <span class="field-error" role="alert">
+              {{ newUserForm.city().errors()[0].message | translate }}
+            </span>
+          }
+        </label>
+
+        <div class="form-actions">
+          <button
+            type="submit"
+            class="btn btn-primary"
+            [disabled]="!canSave()"
+            [attr.aria-disabled]="!canSave()"
+          >
+            {{ 'common.save' | translate }}
+          </button>
+          <button type="button" class="btn btn-secondary" (click)="close()">
+            {{ 'common.cancel' | translate }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>

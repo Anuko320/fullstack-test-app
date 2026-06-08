@@ -1,0 +1,59 @@
+<header class="app-header">
+    <div class="app-header-inner">
+      <span class="app-logo">frontend-test-app</span>
+  
+      <button
+        type="button"
+        class="burger-btn"
+        [class.is-open]="menuOpen()"
+        (click)="toggleMenu()"
+        aria-label="Menu"
+      >
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  
+    @if (menuOpen()) {
+      <div class="drawer-backdrop" (click)="closeMenu()"></div>
+      <nav class="drawer">
+        <div class="drawer-section">
+          <p class="drawer-label">{{ 'header.theme' | translate }}</p>
+          <button type="button" class="drawer-item" (click)="themeService.toggle()">
+            @if (themeService.theme() === 'dark') {
+              ☀️ {{ 'header.lightTheme' | translate }}
+            } @else {
+              🌙 {{ 'header.darkTheme' | translate }}
+            }
+          </button>
+        </div>
+  
+        <div class="drawer-section">
+          <p class="drawer-label">{{ 'header.language' | translate }}</p>
+          <button
+            type="button"
+            class="drawer-item"
+            [class.is-active]="langService.language() === 'en'"
+            (click)="langService.toggle()"
+          >
+            English
+          </button>
+          <button
+            type="button"
+            class="drawer-item"
+            [class.is-active]="langService.language() === 'ru'"
+            (click)="langService.toggle()"
+          >
+            Русский
+          </button>
+        </div>
+  
+        <div class="drawer-footer">
+          <button type="button" class="drawer-item logout" (click)="logout()">
+            {{ 'header.logout' | translate }}
+          </button>
+        </div>
+      </nav>
+    }
+  </header>

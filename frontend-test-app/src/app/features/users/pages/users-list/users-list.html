@@ -1,0 +1,193 @@
+<div class="page">
+  <app-header />
+
+  <main class="page-container">
+    @if (deleteMessage(); as message) {
+      <p class="alert alert-success" role="status" aria-live="polite">{{ message }}</p>
+    }
+
+    <div class="controls-bar">
+      <label class="field search-field">
+        <span class="field-label">{{ 'users.search.label' | translate }}</span>
+        <div class="search-row">
+          <input
+            class="input"
+            type="search"
+            [placeholder]="'users.search.placeholder' | translate"
+            [value]="searchInput()"
+            (input)="onSearchInput($event)"
+            [attr.aria-label]="'users.search.ariaLabel' | translate"
+          />
+          @if (searchInput()) {
+            <button type="button" class="btn btn-ghost" (click)="clearSearch()">
+              {{ 'users.search.clear' | translate }}
+            </button>
+          }
+        </div>
+      </label>
+
+      <div class="sort-field">
+        <span class="field-label">{{ 'users.sort.label' | translate }}</span>
+
+        <button
+          cdkOverlayOrigin
+          #sortTrigger="cdkOverlayOrigin"
+          type="button"
+          class="input sort-select-btn"
+          (click)="showSortDropdown.set(!showSortDropdown())"
+        >
+          @if (nameSortOrder() === 'asc') {
+            <span>A -> Z</span>
+          } @else if (nameSortOrder() === 'desc') {
+            <span>Z -> A</span>
+          } @else {
+            <span>{{ 'users.sort.placeholder' | translate }}</span>
+          }
+        </button>
+
+        <ng-template
+          cdkConnectedOverlay
+          [cdkConnectedOverlayOrigin]="sortTrigger"
+          [cdkConnectedOverlayOpen]="showSortDropdown()"
+          [cdkConnectedOverlayHasBackdrop]="true"
+          (backdropClick)="showSortDropdown.set(false)"
+          [cdkConnectedOverlayPositions]="[
+            {
+              originX: 'start',
+              originY: 'bottom',
+              overlayX: 'start',
+              overlayY: 'top',
+              offsetY: 8
+            }
+          ]"
+        >
+          <div class="sort-dropdown">
+            <button
+              type="button"
+              class="sort-dropdown"
+              (click)="nameSortOrder.set('asc'); showSortDropdown.set(false)"
+            >
+              A -> Z
+            </button>
+
+            <button
+              type="button"
+              class="sort-dropdown"
+              (click)="nameSortOrder.set('desc'); showSortDropdown.set(false)"
+            >
+              Z -> A
+            </button>
+          </div>
+        </ng-template>
+      </div>
+
+      <div class="add-user-wrap">
+        <button
+          cdkOverlayOrigin
+          #addUserTrigger="cdkOverlayOrigin"
+          type="button"
+          class="btn btn-primary"
+          (click)="openAddUserDialog()"
+        >
+          {{ 'users.addUser' | translate }}
+        </button>
+
+        <ng-template
+          cdkConnectedOverlay
+          [cdkConnectedOverlayOrigin]="addUserTrigger"
+          [cdkConnectedOverlayOpen]="showAddUserPanel()"
+          [cdkConnectedOverlayHasBackdrop]="true"
+          (backdropClick)="closeAddUserPanel()"
+          [cdkConnectedOverlayPositions]="[
+            {
+              originX: 'start',
+              originY: 'bottom',
+              overlayX: 'start',
+              overlayY: 'top',
+              offsetY: 12
+            }
+          ]"
+        >
+        </ng-template>
+      </div>
+    </div>
+
+    @if (error(); as errorMessage) {
+      <div class="error-block" role="alert" aria-live="polite">
+        <p class="alert alert-error">{{ errorMessage }}</p>
+        <button type="button" class="btn btn-secondary" (click)="retryLoad()">
+          {{ 'common.retry' | translate }}
+        </button>
+      </div>
+    }
+
+    <section class="content-panel" [attr.aria-label]="'users.listAriaLabel' | translate">
+      <div class="content-panel-header">
+        <h2>{{ 'users.allUsers' | translate }}</h2>
+        @if (!loading()) {
+          <span class="badge">{{ 'users.shown' | translate: { count: visibleUsers() } }}</span>
+        }
+      </div>
+
+      @if (loading()) {
+        <div class="loader" role="status" aria-live="polite" aria-busy="true">
+          <div class="loader-spinner" aria-hidden="true"></div>
+          <p class="loader-text">{{ 'users.loading' | translate }}</p>
+        </div>
+      } @else {
+        <div class="users-panel-body">
+          @for (user of displayedUsers(); track user.id) {
+            <article class="user-row">
+              <div class="user-row-main">
+                <div class="user-avatar" aria-hidden="true">{{ user.name.charAt(0) }}</div>
+                <div class="user-info">
+                  <h3 class="user-name">{{ user.name }}</h3>
+                  <p class="user-meta">{{ user.email }}</p>
+                  <p class="user-meta">{{ user.city }}</p>
+                </div>
+              </div>
+
+              <div class="user-row-actions">
+                @if (pendingDeleteId() === user.id) {
+                  <div
+                    class="delete-confirm"
+                    role="group"
+                    [attr.aria-label]="'users.confirmDeleteAriaLabel' | translate: { name: user.name }"
+                  >
+                    <p>Delete locally</p>
+                    <div class="form-actions">
+                      <button type="button" class="btn btn-danger-solid" (click)="confirmDelete()">
+                        Yes, delete
+                        {{ 'common.delete' | translate }}
+                      </button>
+                      <button type="button" class="btn btn-secondary" (click)="cancelDelete()">
+                        Cancel
+                        {{ 'common.cancel' | translate }}
+                      </button>
+                    </div>
+                  </div>
+                } @else {
+                  <button type="button" class="btn btn-danger" (click)="requestDelete(user.id)">
+                    {{ 'users.deleteUser' | translate }}
+                  </button>
+
+                  <button type="button" class="btn btn-edit" (click)="openEditUser(user)">
+                    {{ 'users.editUser' | translate }}
+                  </button>
+                }
+              </div>
+            </article>
+          } @empty {
+            <p class="status-text empty-state">
+              @if (searchInput().trim()) {
+                {{ 'users.nothingFound' | translate }}
+              } @else {
+                {{ 'users.noUsersFound' | translate }}
+              }
+            </p>
+          }
+        </div>
+      }
+    </section>
+  </main>
+</div>
