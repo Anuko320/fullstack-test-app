@@ -33,6 +33,12 @@
   flex-shrink: 0;
 }
 
+.load-more-wrap {
+  display: flex;
+  justify-content: center;
+  padding: var(--space-4);
+}
+
 .add-user-panel {
   position: absolute;
   top: calc(100% + var(--space-2));

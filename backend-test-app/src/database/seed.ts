@@ -14,48 +14,43 @@ const AppDataSource = new DataSource({
   synchronize: true,
 });
 
-const SEED_USERS = [
-  {
-    id: 1, name: 'Leanne Graham', email: 'Sincere@april.biz',
-    city: 'Gwenborough'
-  },
-  {
-    id: 2, name: 'Ervin Howell', email: 'Shanna@melissa.tv',
-    city: 'Wisokyburgh'
-  },
-  {
-    id: 3, name: 'Clementine Bauch', email: 'Nathan@yesenia.net',
-    city: 'McKenziehaven'
-  },
-  {
-    id: 4, name: 'Patricia Lebsack', email: 'Julianne.OConner@kory.org',
-    city: 'South Elvis'
-  },
-  {
-    id: 5, name: 'Chelsey Dietrich', email: 'Lucio_Hettinger@annie.ca',
-    city: 'Roscoeview'
-  },
-  {
-    id: 6, name: 'Mrs. Dennis Schulist', email: 'Karley_Dach@jasper.info',
-    city: 'South Christy'
-  },
-  {
-    id: 7, name: 'Kurtis Weissnat', email: 'Telly.Hoeger@billy.biz',
-    city: 'Howemouth'
-  },
-  {
-    id: 8, name: 'Nicholas Runolfsdottir V', email: 'Sherwood@rosamond.me',
-    city: 'Aliyaview'
-  },
-  {
-    id: 9, name: 'Glenna Reichert', email: 'Chaim_McDermott@dana.io',
-    city: 'Bartholomebury'
-  },
-  {
-    id: 10, name: 'Clementina DuBuque', email: 'Rey.Padberg@karina.biz',
-    city: 'Lebsackbury'
-  },
+const CITIES = [
+  'New York', 'London', 'Paris', 'Tokyo', 'Berlin', 'Madrid', 'Rome',
+  'Amsterdam', 'Vienna', 'Prague', 'Warsaw', 'Budapest', 'Bucharest',
+  'Stockholm', 'Oslo', 'Copenhagen', 'Helsinki', 'Dublin', 'Lisbon',
+  'Athens', 'Istanbul', 'Moscow', 'Kyiv', 'Minsk', 'Almaty', 'Astana',
 ];
+
+const FIRST_NAMES = [
+  'James', 'John', 'Robert', 'Michael', 'William', 'David', 'Richard',
+  'Joseph', 'Thomas', 'Charles', 'Mary', 'Patricia', 'Jennifer', 'Linda',
+  'Barbara', 'Elizabeth', 'Susan', 'Jessica', 'Sarah', 'Karen', 'Lisa',
+  'Nancy', 'Betty', 'Margaret', 'Sandra', 'Ashley', 'Emily', 'Donna',
+];
+
+const LAST_NAMES = [
+  'Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Garcia', 'Miller',
+  'Davis', 'Rodriguez', 'Martinez', 'Hernandez', 'Lopez', 'Gonzalez',
+  'Wilson', 'Anderson', 'Thomas', 'Taylor', 'Moore', 'Jackson', 'Martin',
+  'Lee', 'Perez', 'Thompson', 'White', 'Harris', 'Sanchez', 'Clark',
+];
+
+function generateUsers(count: number) {
+  const users = [];
+  for (let i = 1; i <= count; i++) {
+    const firstName = FIRST_NAMES[i % FIRST_NAMES.length];
+    const lastName = LAST_NAMES[i % LAST_NAMES.length];
+    const city = CITIES[i % CITIES.length];
+    users.push({
+      name: `${firstName} ${lastName}`,
+      email: `user${i}@example.com`,
+      city,
+      phone: `+1-${String(i).padStart(3, '0')}-${String(i * 7).padStart(4, '0')}`,
+      website: `user${i}.example.com`,
+    });
+  }
+  return users;
+}
 
 async function seed() {
   console.log('🌱 Starting database seed...');
@@ -75,10 +70,11 @@ async function seed() {
   const userRepo = AppDataSource.getRepository(User);
   const existingCount = await userRepo.count();
   if (existingCount === 0) {
-    for (const userData of SEED_USERS) {
+    const users = generateUsers(100);
+    for (const userData of users) {
       await userRepo.save(userRepo.create(userData));
     }
-    console.log(`✅ Seeded ${SEED_USERS.length} users`);
+    console.log(`✅ Seeded 100 users`);
   } else {
     console.log(`ℹ️  Users already exist (${existingCount}), skipping`);
   }

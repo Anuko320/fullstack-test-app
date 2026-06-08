@@ -2,6 +2,9 @@ import {
   ChangeDetectionStrategy,
   Component,
   DestroyRef,
+  AfterViewInit,
+  ElementRef,
+  ViewChild,
   computed,
   inject,
   signal,
@@ -33,9 +36,8 @@ const DELETE_MESSAGE_MS = 3000;
   ],
   templateUrl: './users-list.html',
   styleUrl: './users-list.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class UsersList {
+export class UsersList implements AfterViewInit {
   private readonly usersService = inject(UsersService);
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
@@ -47,6 +49,7 @@ export class UsersList {
   readonly users = this.usersService.users;
   readonly loading = this.usersService.loading;
   readonly error = this.usersService.error;
+  readonly hasMore = this.usersService.hasMore;
 
   readonly pendingDeleteId = signal<number | null>(null);
   readonly editingUserId = signal<number | null>(null);
@@ -67,6 +70,29 @@ export class UsersList {
         window.clearTimeout(this.deleteMessageTimer);
       }
     });
+  }
+
+  ngAfterViewInit(): void {
+    window.addEventListener('scroll', this.handleScroll.bind(this));
+    this.destroyRef.onDestroy(() => {
+      window.removeEventListener('scroll', this.handleScroll.bind(this));
+    });
+  }
+  
+  private handleScroll(): void {
+    console.log('scroll fired', this.loading(), this.hasMore());
+    if (this.loading() || !this.hasMore()) return;
+  
+    const scrolled = window.scrollY + window.innerHeight;
+    const total = document.documentElement.scrollHeight;
+  
+    if (scrolled >= total - 400) {
+      this.usersService.loadMore();
+    }
+  }
+  
+  loadMore(): void {
+    this.usersService.loadMore();
   }
 
   onSearchInput(event: Event): void {

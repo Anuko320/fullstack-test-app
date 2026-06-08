@@ -26,60 +26,93 @@ export class UsersService {
   readonly users = signal<User[]>([]);
   readonly loading = signal(false);
   readonly error = signal<string | null>(null);
+  readonly hasMore = signal(true);
+  readonly currentPage = signal(1);
+
+  private currentSearch = '';
+  private currentSortBy: SortField = 'id';
+  private currentOrder: SortOrder = 'ASC';
+  private readonly PAGE_SIZE = 10;
 
   loadUsers(options?: {
     search?: string;
     sortBy?: SortField;
     order?: SortOrder;
+    reset?: boolean;
   }): void {
+    const isReset = options?.reset !== false;
+    if (isReset) {
+    this.users.set([]);
+    this.currentPage.set(1);
+    this.hasMore.set(true);
+  }
+
+    if (options?.search !== undefined) this.currentSearch = options.search;
+    if (options?.sortBy) this.currentSortBy = options.sortBy;
+    if (options?.order) this.currentOrder = options.order;
+
     this.loading.set(true);
     this.error.set(null);
 
-    let params = new HttpParams().set('limit', '100');
+    let params = new HttpParams()
+      .set('page', this.currentPage())
+      .set('limit', this.PAGE_SIZE);
 
-    if (options?.search) {
-      params = params.set('search', options.search);
+    if (this.currentSearch) {
+      params = params.set('search', this.currentSearch);
     }
-    if (options?.sortBy) {
-      params = params.set('sortBy', options.sortBy);
+    if (this.currentSortBy) {
+      params = params.set('sortBy', this.currentSortBy);
     }
-    if (options?.order) {
-      params = params.set('order', options.order);
+    if (this.currentOrder) {
+      params = params.set('order', this.currentOrder);
     }
 
     this.http
       .get<ApiResponse>(`${environment.apiUrl}/users`, { params })
       .pipe(
-        map((res) => res.data),
         catchError(() => {
           this.error.set('Не удалось загрузить пользователей.');
-          return of<User[]>([]);
+          return of<ApiResponse>({ data: [], meta: { total: 0, page: 1, limit: 10, totalPages: 0 } });
         }),
         finalize(() => this.loading.set(false)),
       )
-      .subscribe((users) => this.users.set(users));
+      .subscribe((res) => {
+        if (isReset) {
+          this.users.set(res.data);
+        } else {
+          this.users.update((prev) => [...prev, ...res.data]);
+        }
+        this.hasMore.set(this.currentPage() < res.meta.totalPages);
+      });
+  }
+
+  loadMore(): void {
+    if (this.loading() || !this.hasMore()) return;
+    this.currentPage.update((p) => p + 1);
+    this.loadUsers({ reset: false });
   }
 
   init(): void {
-    this.loadUsers();
+    this.loadUsers({ reset: true });
   }
 
   reloadFromApi(): void {
-    this.loadUsers();
+    this.loadUsers({ reset: true });
   }
 
   async addUser(input: Omit<User, 'id'>): Promise<void> {
     await this.http
       .post<User>(`${environment.apiUrl}/users`, input)
       .toPromise();
-    this.loadUsers();
+    this.loadUsers({ reset: true });
   }
 
   async deleteUser(id: number): Promise<void> {
     await this.http
       .delete(`${environment.apiUrl}/users/${id}`)
       .toPromise();
-    this.loadUsers();
+    this.loadUsers({ reset: true });
   }
 
   async updateUser(updatedUser: User): Promise<void> {
@@ -92,6 +125,6 @@ export class UsersService {
         website: updatedUser.website,
       })
       .toPromise();
-    this.loadUsers();
+    this.loadUsers({ reset: true });
   }
 }

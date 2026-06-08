@@ -33,6 +33,7 @@
   "users": {
     "title": "Users",
     "subtitle": "{{count}} users in directory",
+    "loadMore": "Load more",
     "search": {
       "label": "Search by name",
       "placeholder": "Enter name...",

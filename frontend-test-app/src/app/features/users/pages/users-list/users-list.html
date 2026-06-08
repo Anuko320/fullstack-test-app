@@ -109,7 +109,7 @@
         }
       </div>
 
-      @if (loading()) {
+      @if (loading() && users().length === 0) {
         <div class="loader" role="status" aria-live="polite" aria-busy="true">
           <div class="loader-spinner" aria-hidden="true"></div>
           <p class="loader-text">{{ 'users.loading' | translate }}</p>
@@ -159,6 +159,18 @@
             </p>
           }
         </div>
+        @if (hasMore() && !loading()) {
+          <div class="load-more-wrap">
+            <button type="button" class="btn btn-secondary" (click)="loadMore()">
+              {{ 'users.loadMore' | translate }}
+            </button>
+          </div>
+        }
+        @if (loading() && users().length > 0) {
+          <div class="loader" style="padding: 1rem;">
+            <div class="loader-spinner"></div>
+          </div>
+        }
       }
     </section>
   </main>
