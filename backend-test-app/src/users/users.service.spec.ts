@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { UsersService } from '../../users/users.service';
+import { UsersService } from './users.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { User } from '../../users/entities/user.entity';
+import { User } from './entities/user.entity';
 import { NotFoundException, ConflictException } from '@nestjs/common';
 
 describe('UsersService', () => {
@@ -143,5 +143,120 @@ describe('UsersService', () => {
     await expect(
       service.update(1, { email: 'taken@example.com' })
     ).rejects.toThrow(ConflictException);
+  });
+
+  it('update — должен взять city из address.city если city не передан', async () => {
+    const userRepo = module.get(getRepositoryToken(User));
+  
+    const existingUser = { id: 1, name: 'Test', email: 'test@example.com', city: null };
+    const updatedUser = { id: 1, name: 'Test', email: 'test@example.com', city: 'Almaty' };
+  
+    jest.spyOn(userRepo, 'findOne').mockResolvedValue(existingUser as any);
+    jest.spyOn(userRepo, 'save').mockResolvedValue(updatedUser as any);
+  
+    const result = await service.update(1, {
+      address: { city: 'Almaty' }, // передаём city через address
+      // city не передаём напрямую
+    } as any);
+  
+    expect(result.city).toBe('Almaty');
+  });
+
+  it('findAll — должен вернуть список пользователей с метаданными', async () => {
+    const userRepo = module.get(getRepositoryToken(User));
+  
+    const mockUsers = [
+      { id: 1, name: 'Test User', email: 'test@example.com' },
+      { id: 2, name: 'Another User', email: 'another@example.com' },
+    ];
+  
+    // createQueryBuilder возвращает цепочку методов — каждый возвращает сам себя
+    const mockQueryBuilder = {
+      where: jest.fn().mockReturnThis(),
+      orderBy: jest.fn().mockReturnThis(),
+      skip: jest.fn().mockReturnThis(),
+      take: jest.fn().mockReturnThis(),
+      getManyAndCount: jest.fn().mockResolvedValue([mockUsers, 2]),
+    };
+  
+    jest.spyOn(userRepo, 'createQueryBuilder').mockReturnValue(mockQueryBuilder as any);
+  
+    const result = await service.findAll({ page: 1, limit: 10, order: 'ASC', sortBy: 'id' });
+  
+    expect(result.data).toEqual(mockUsers);
+    expect(result.meta.total).toBe(2);
+    expect(result.meta.page).toBe(1);
+    expect(result.meta.totalPages).toBe(1);
+  });
+  
+  it('findAll — должен фильтровать по search', async () => {
+    const userRepo = module.get(getRepositoryToken(User));
+  
+    const mockQueryBuilder = {
+      where: jest.fn().mockReturnThis(),
+      orderBy: jest.fn().mockReturnThis(),
+      skip: jest.fn().mockReturnThis(),
+      take: jest.fn().mockReturnThis(),
+      getManyAndCount: jest.fn().mockResolvedValue([[{ id: 1, name: 'Test User', email: 'test@example.com' }], 1]),
+    };
+  
+    jest.spyOn(userRepo, 'createQueryBuilder').mockReturnValue(mockQueryBuilder as any);
+  
+    const result = await service.findAll({ search: 'Test', page: 1, limit: 10, order: 'ASC', sortBy: 'id' });
+  
+    // проверяем что where был вызван с поиском
+    expect(mockQueryBuilder.where).toHaveBeenCalled();
+    expect(result.data).toHaveLength(1);
+  });
+
+  it('create — должен взять city напрямую из dto.city', async () => {
+    const userRepo = module.get(getRepositoryToken(User));
+  
+    const dto = { name: 'New User', email: 'city@example.com', city: 'Astana' };
+    const mockUser = { id: 1, ...dto };
+  
+    jest.spyOn(userRepo, 'findOne').mockResolvedValue(null);
+    jest.spyOn(userRepo, 'create').mockReturnValue(mockUser as any);
+    jest.spyOn(userRepo, 'save').mockResolvedValue(mockUser as any);
+  
+    const result = await service.create(dto);
+  
+    expect(result.city).toBe('Astana');
+  });
+
+  it('findAll — должен работать с пустым query', async () => {
+    const userRepo = module.get(getRepositoryToken(User));
+  
+    const mockQueryBuilder = {
+      where: jest.fn().mockReturnThis(),
+      orderBy: jest.fn().mockReturnThis(),
+      skip: jest.fn().mockReturnThis(),
+      take: jest.fn().mockReturnThis(),
+      getManyAndCount: jest.fn().mockResolvedValue([[], 0]),
+    };
+  
+    jest.spyOn(userRepo, 'createQueryBuilder').mockReturnValue(mockQueryBuilder as any);
+  
+    const result = await service.findAll({});
+  
+    // where не должен вызываться — search не передан
+    expect(mockQueryBuilder.where).not.toHaveBeenCalled();
+    expect(result.data).toHaveLength(0);
+    expect(result.meta.total).toBe(0);
+  });
+
+  it('create — должен установить city как undefined если ни dto.city ни address.city не переданы', async () => {
+    const userRepo = module.get(getRepositoryToken(User));
+  
+    const dto = { name: 'No City User', email: 'nocity@example.com' };
+    const mockUser = { id: 1, ...dto, city: undefined };
+  
+    jest.spyOn(userRepo, 'findOne').mockResolvedValue(null);
+    jest.spyOn(userRepo, 'create').mockReturnValue(mockUser as any);
+    jest.spyOn(userRepo, 'save').mockResolvedValue(mockUser as any);
+  
+    const result = await service.create(dto);
+  
+    expect(result.city).toBeUndefined();
   });
 });

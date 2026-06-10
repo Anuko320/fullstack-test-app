@@ -6,4 +6,15 @@ module.exports = {
     transform: {
       '^.+\\.(t|j)s$': 'ts-jest',
     },
+    collectCoverageFrom: [
+      '**/*.ts',
+      '!**/*.dto.ts',
+      '!**/*.entity.ts',
+      '!**/*.guard.ts',
+      '!**/*.module.ts',
+      '!**/*.strategy.ts',
+      '!**/main.ts',
+      '!**/seed.ts',
+      '!**/support/**',
+    ],
   };
