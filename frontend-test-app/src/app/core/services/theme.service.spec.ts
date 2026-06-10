@@ -26,6 +26,30 @@ describe('ThemeService', () => {
     TestBed.configureTestingModule({});
   });
 
+  it('should default to dark theme when system prefers dark and no stored preference', () => {
+    // переопределяем matchMedia — система настроена на тёмную тему
+    Object.defineProperty(window, 'matchMedia', {
+      writable: true,
+      value: vi.fn().mockReturnValue({
+        matches: true, // ← тёмная тема в системе
+        media: '(prefers-color-scheme: dark)',
+        onchange: null,
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        dispatchEvent: vi.fn(),
+      }),
+    });
+  
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule({});
+  
+    const service = TestBed.inject(ThemeService);
+    expect(service.theme()).toBe('dark');
+  });
+  
+
   afterEach(() => {
     localStorage.clear();
     document.documentElement.removeAttribute('data-theme');
@@ -58,5 +82,19 @@ describe('ThemeService', () => {
 
     const service = TestBed.inject(ThemeService);
     expect(service.theme()).toBe('dark');
+  });
+
+  it('should default to light theme when matchMedia is not available', () => {
+    // убираем matchMedia — как будто браузер его не поддерживает
+    Object.defineProperty(window, 'matchMedia', {
+      writable: true,
+      value: undefined,
+    });
+  
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule({});
+  
+    const service = TestBed.inject(ThemeService);
+    expect(service.theme()).toBe('light');
   });
 });
