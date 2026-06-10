@@ -77,5 +77,24 @@
       "emailInvalid": "Введите корректный email",
       "cityRequired": "Город обязателен"
     }
+  },
+  "support": {
+    "button": "Поддержка",
+    "form": {
+      "title": "Написать в поддержку",
+      "name": "Имя",
+      "email": "Email",
+      "message": "Сообщение",
+      "messagePlaceholder": "Опишите вашу проблему...",
+      "send": "Отправить",
+      "sending": "Отправка...",
+      "success": "Сообщение отправлено!",
+      "nameRequired": "Введите имя",
+      "nameMinLength": "Минимум 2 символа",
+      "emailRequired": "Введите email",
+      "emailInvalid": "Некорректный email",
+      "messageRequired": "Введите сообщение",
+      "messageMinLength": "Минимум 10 символов"
+    }
   }
 }

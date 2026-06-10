@@ -6,6 +6,8 @@ import { AuthService } from '../../core/services/auth';
 import { ThemeService } from '../../core/services/theme.service';
 import { LanguageService } from '../../core/services/language.service';
 import { ConfirmDialogService } from '../confirm-modal/confirm-dialog.service';
+import { Dialog } from '@angular/cdk/dialog';
+import { SupportDialog } from '../support-dialog/support-dialog';
 
 @Component({
   selector: 'app-header',
@@ -17,11 +19,17 @@ export class AppHeader {
   private readonly router = inject(Router);
   private readonly authService = inject(AuthService);
   private readonly confirmDialog = inject(ConfirmDialogService);
+  private readonly dialog = inject(Dialog);
   readonly themeService = inject(ThemeService);
   readonly langService = inject(LanguageService);
 
   readonly menuOpen = signal(false);
 
+  openSupportDialog(): void {
+    this.closeMenu();
+    this.dialog.open(SupportDialog, { panelClass: 'dialog-panel' });
+  }
+  
   toggleMenu(): void {
     this.menuOpen.update((v) => !v);
   }

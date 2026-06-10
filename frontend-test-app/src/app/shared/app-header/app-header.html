@@ -49,6 +49,13 @@
             Русский
           </button>
         </div>
+
+        <div class="drawer-section">
+          <p class="drawer-label">{{ 'header.support' | translate }}</p>
+          <button type="button" class="drawer-item" (click)="openSupportDialog()">
+            {{ 'support.button' | translate }}
+          </button>
+        </div>
   
         <div class="drawer-footer">
           <button type="button" class="drawer-item logout" (click)="logout()">

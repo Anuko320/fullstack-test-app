@@ -77,5 +77,24 @@
       "emailInvalid": "Enter a valid email",
       "cityRequired": "City is required"
     }
+  },
+      "support": {
+      "button": "Support",
+      "form": {
+      "title": "Contact Support",
+      "name": "Name",
+      "email": "Email",
+      "message": "Message",
+      "messagePlaceholder": "Describe your problem...",
+      "send": "Send",
+      "sending": "Sending...",
+      "success": "Message sent!",
+      "nameRequired": "Enter your name",
+      "nameMinLength": "Minimum 2 characters",
+      "emailRequired": "Enter your email",
+      "emailInvalid": "Invalid email",
+      "messageRequired": "Enter your message",
+      "messageMinLength": "Minimum 10 characters"
+    }
   }
 }

@@ -1,0 +1,81 @@
+<div>
+  <div class="modal">
+    <p class="panel-title">{{ 'support.form.title' | translate }}</p>
+
+    @if (success()) {
+      <div class="success-message" role="status">
+        <p>{{ 'support.form.success' | translate }}</p>
+      </div>
+    } @else {
+      <form class="support-form" (submit)="sendMessage(); $event.preventDefault()">
+
+        <label class="field">
+          <span class="field-label">{{ 'support.form.name' | translate }}</span>
+          <input
+            class="input"
+            [class.input-invalid]="supportForm.name().invalid() && supportForm.name().touched()"
+            type="text"
+            [placeholder]="'support.form.name' | translate"
+            [formField]="supportForm.name"
+          />
+          @if (supportForm.name().touched() && supportForm.name().errors().length) {
+            <span class="field-error" role="alert">
+              {{ supportForm.name().errors()[0].message | translate }}
+            </span>
+          }
+        </label>
+
+        <label class="field">
+          <span class="field-label">{{ 'support.form.email' | translate }}</span>
+          <input
+            class="input"
+            [class.input-invalid]="supportForm.email().invalid() && supportForm.email().touched()"
+            type="email"
+            [placeholder]="'support.form.email' | translate"
+            [formField]="supportForm.email"
+          />
+          @if (supportForm.email().touched() && supportForm.email().errors().length) {
+            <span class="field-error" role="alert">
+              {{ supportForm.email().errors()[0].message | translate }}
+            </span>
+          }
+        </label>
+
+        <label class="field">
+          <span class="field-label">{{ 'support.form.message' | translate }}</span>
+          <textarea
+            class="input textarea"
+            [class.input-invalid]="supportForm.message().invalid() && supportForm.message().touched()"
+            rows="4"
+            [placeholder]="'support.form.messagePlaceholder' | translate"
+            [formField]="supportForm.message"
+          ></textarea>
+          @if (supportForm.message().touched() && supportForm.message().errors().length) {
+            <span class="field-error" role="alert">
+              {{ supportForm.message().errors()[0].message | translate }}
+            </span>
+          }
+        </label>
+
+        <div class="form-actions">
+          <button
+            type="submit"
+            class="btn btn-primary"
+            [disabled]="!canSubmit()"
+            [attr.aria-disabled]="!canSubmit()"
+          >
+            @if (loading()) {
+              {{ 'support.form.sending' | translate }}
+            } @else {
+              {{ 'support.form.send' | translate }}
+            }
+          </button>
+          <button type="button" class="btn btn-secondary" (click)="close()">
+            {{ 'common.cancel' | translate }}
+          </button>
+        </div>
+
+      </form>
+    }
+  </div>
+</div>
