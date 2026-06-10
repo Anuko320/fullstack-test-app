@@ -1,18 +1,19 @@
 <header class="app-header">
+  <header class="app-header">
+    <button
+      type="button"
+      class="burger-btn"
+      [class.is-open]="menuOpen()"
+      (click)="toggleMenu()"
+      aria-label="Menu"
+    >
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  
     <div class="app-header-inner">
       <span class="app-logo">frontend-test-app</span>
-  
-      <button
-        type="button"
-        class="burger-btn"
-        [class.is-open]="menuOpen()"
-        (click)="toggleMenu()"
-        aria-label="Menu"
-      >
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
     </div>
   
     @if (menuOpen()) {

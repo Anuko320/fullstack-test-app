@@ -1,20 +1,28 @@
 .app-header {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    background: var(--color-surface);
-    border-bottom: 1px solid var(--color-border);
-  }
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+}
+
+.burger-btn {
+  position: absolute;
+  left: var(--space-4);
+}
   
-  .app-header-inner {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: var(--space-4) var(--space-6);
-    max-width: 1200px;
-    margin: 0 auto;
-    flex-direction: row-reverse;
-  }
+.app-header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4) var(--space-6);
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  padding-left: 3.5rem; // ← добавь это
+}
   
   .app-logo {
     font-size: var(--font-size-lg);
