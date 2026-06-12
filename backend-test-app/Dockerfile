@@ -1,21 +1,26 @@
-FROM node:20-alpine AS builder
+FROM node:20-bookworm AS build
+
+RUN apt-get update && apt-get install -y python3 make g++ && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
 COPY package*.json ./
-RUN npm ci
+RUN npm install --legacy-peer-deps
 
 COPY . .
 RUN npm run build
 
-FROM node:20-alpine AS production
+
+FROM node:20-bookworm
+
+RUN apt-get update && apt-get install -y python3 make g++ && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
 COPY package*.json ./
-RUN npm ci --omit=dev
+RUN npm install --omit=dev --legacy-peer-deps
 
-COPY --from=builder /app/dist ./dist
+COPY --from=build /app/dist ./dist
 
 EXPOSE 3000
 
