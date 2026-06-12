@@ -22,6 +22,8 @@ RUN npm install --omit=dev --legacy-peer-deps
 
 COPY --from=build /app/dist ./dist
 
+RUN printf '#!/bin/sh\nnpm run seed\nnode dist/main\n' > /app/start.sh && chmod +x /app/start.sh
+
 EXPOSE 3000
 
-CMD ["node", "dist/main"]
+CMD ["/app/start.sh"]
