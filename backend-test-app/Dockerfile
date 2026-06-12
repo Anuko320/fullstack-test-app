@@ -22,7 +22,7 @@ RUN npm install --omit=dev --legacy-peer-deps
 
 COPY --from=build /app/dist ./dist
 
-RUN printf '#!/bin/sh\nnpm run seed\nnode dist/main\n' > /app/start.sh && chmod +x /app/start.sh
+RUN printf '#!/bin/sh\nnode dist/database/seed.js\nnode dist/main\n' > /app/start.sh && chmod +x /app/start.sh
 
 EXPOSE 3000
 
